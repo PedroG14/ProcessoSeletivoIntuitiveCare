@@ -10,14 +10,14 @@ def main():
     soup = BeautifulSoup(urlRes.content, "html.parser")
 
     #Buscando e armazenando uma lista de links cujo texto do hyperlink contém a palavra "Anexo"
-    links = soup.select('a')
-    linksAnexos = [link.get("href") for link in links if "Anexo" in link.text]
+    hlinks = soup.select('a')
+    linkAnexos = [hlink.get("href") for hlink in hlinks if "Anexo" in hlink.text]
 
     #Armazenando nome dos arquivos
-    nomeArquivos = [linksAnexos[i].split('/')[-1] for i in range(len(linksAnexos))]
+    nomeArquivos = [link.split('/')[-1] for link in linkAnexos]
 
     #Baixando arquivos
-    for i, link in enumerate(linksAnexos):
+    for i, link in enumerate(linkAnexos):
         download(nomeArquivos[i], link)
     
     #Comprimindo arquivos
