@@ -25,7 +25,7 @@ def main():
     #Removendo quebra de linha do nome das colunas e dos dados
     #Caso não seja removido, a quebra de linha pode interferir na organização do arquivo csv final
     tabelaFinal.columns = tabelaFinal.columns.str.replace('\r', ' ', regex = True)
-    tabelaFinal = tabelaFinal.replace('\r', ' ', regex = True)
+    tabelaFinal = tabelaFinal.replace('\r', ' ', regex = True).replace(';', '.,', regex = True) # ';' divide uma célula em duas quando a tabela é salva como csv, por isso será substituído por '.,'
 
     #EXTRA: Substituindo os dados abreviados das colunas OD e AMB
     tabelaFinal.columns = tabelaFinal.columns.str.replace("^OD$", "Seg. Odontológica", regex = True).str.replace("^AMB$", "Seg. Ambulatorial", regex = True)
@@ -33,15 +33,18 @@ def main():
 
     #Variável do caminho do arquivo csv
     caminhoCsv = pdfCaminho + ".csv"
-
+    
     #Salvando tabela csv
     tabelaFinal.to_csv(caminhoCsv, index = False)
 
+    #Variável do nome do arquivo zip final
+    caminhoZip = caminho + "Teste_Pedro_Gabriel_de_Morais_Ribeiro.zip"
+
     #Zipando arquivo csv gerado
-    zipArquivo("Teste_Pedro_Gabriel_de_Morais_Ribeiro.zip", caminhoCsv)
+    zipArquivo(caminhoZip, caminhoCsv)
 
 #Função para zipar arquivo 
-#Parâmetros: Nome desejado do arquivo zip, arquivo que será zipado
+#Parâmetros: Caminho/nome desejado do arquivo zip, arquivo que será zipado
 def zipArquivo(nomeZip, caminhoArquivo):
     with ZipFile(nomeZip, 'w') as zipper:
         zipper.write(caminhoArquivo)
