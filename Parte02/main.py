@@ -25,7 +25,7 @@ def main():
     #Removendo quebra de linha do nome das colunas e dos dados
     #Caso não seja removido, a quebra de linha pode interferir na organização do arquivo csv final
     tabelaFinal.columns = tabelaFinal.columns.str.replace('\r', ' ', regex = True)
-    tabelaFinal = tabelaFinal.replace('\r', ' ', regex = True).replace(';', '.,', regex = True) # ';' divide uma célula em duas quando a tabela é salva como csv, por isso será substituído por '.,'
+    tabelaFinal = tabelaFinal.replace('\r', ' ', regex = True)
 
     #EXTRA: Substituindo os dados abreviados das colunas OD e AMB
     tabelaFinal.columns = tabelaFinal.columns.str.replace("^OD$", "Seg. Odontológica", regex = True).str.replace("^AMB$", "Seg. Ambulatorial", regex = True)
