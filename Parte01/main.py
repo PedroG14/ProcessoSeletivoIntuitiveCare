@@ -9,19 +9,30 @@ def main():
     #Criando objeto BeautifulSoup
     soup = BeautifulSoup(urlRes.content, "html.parser")
 
-    #Buscando e armazenando uma lista de links cujo texto do hyperlink contém a palavra "Anexo"
+    #Armazenando lista de hyperlinks da página
     hlinks = soup.select('a')
-    linkAnexos = [hlink.get("href") for hlink in hlinks if "Anexo" in hlink.text]
 
-    #Armazenando nome dos arquivos
-    nomeArquivos = [link.split('/')[-1] for link in linkAnexos]
+    #Buscando e armazenando links, juntamente com o nome de seus arquivos, em que o texto do hyperlink contém a palavra "Anexo"
+    anexos = []
+    for hlink in hlinks:
+        if "Anexo" in hlink.text:
+            anexos.append({
+                "link": hlink.get("href"),
+                "nome": hlink.get("href").split('/')[-1]
+            })
 
     #Baixando arquivos
-    for i, link in enumerate(linkAnexos):
-        download(nomeArquivos[i], link)
+    for anexo in anexos:
+        download(anexo.get("link"), anexo.get("nome"))
     
     #Comprimindo arquivos
-    zipMultiArqs("anexos.zip", nomeArquivos)
+    zipMultiArqs("anexos.zip", [anexo.get("nome") for anexo in anexos])
+
+#Função para realizar o download de um arquivo
+#Parâmetros: Url do arquivo, nome do arquivo
+def download(url, nomeArq):
+    urlRes = get(url, stream = True)
+    open(nomeArq, "wb").write(urlRes.content)
 
 #Função para zipar arquivos 
 #Parâmetros: Nome desejado do arquivo zip, lista dos arquivos que serão zipados
@@ -29,12 +40,6 @@ def zipMultiArqs(nomeZip, nomeArquivos):
     with ZipFile(nomeZip, 'w') as zipper:
         for nomeArq in nomeArquivos:
             zipper.write(nomeArq)
-
-#Função para realizar o download de um arquivo
-#Parâmetros: Nome desejado do arquivo, url do arquivo
-def download(nomeArq, url):
-    urlRes = get(url, stream = True)
-    open(nomeArq, "wb").write(urlRes.content)
 
 if __name__ == "__main__":
     main()
